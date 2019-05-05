@@ -47,23 +47,7 @@ def log_in():
     # 输入框获取用户名密码
     usr_name = var_usr_name.get()
     usr_pwd = var_usr_pwd.get()
-    # 从本地字典获取用户信息，如果没有则新建本地数据库
-    try:
-        with open('usr_info.pickle', 'rb') as usr_file:
-            usrs_info = pickle.load(usr_file)
-    except FileNotFoundError:
-        with open('usr_info.pickle', 'wb') as usr_file:
-            usrs_info = {'admin': 'admin'}
-            pickle.dump(usrs_info, usr_file)
-    # 判断用户名和密码是否匹配
-    if usr_name in usrs_info:
-        if usr_pwd == usrs_info[usr_name]:
-            tkinter.messagebox.showinfo(title='welcome',
-                                        message='欢迎您：' + usr_name)
-        else:
-            tkinter.messagebox.showerror(message='密码错误')
-    # 用户名密码不能为空
-    elif usr_name == '' or usr_pwd == '':
+    if usr_name == '' or usr_pwd == '':
         tkinter.messagebox.showerror(message='用户名或密码为空')
     # 不在数据库中弹出是否注册的框
     else:
@@ -134,9 +118,18 @@ def hall_interface():
     展现目前房间情况
     根据玩家点击进入或创建房间或刷新界面
     """
-    while True:						# 该层循环为：当满足条件时结束该函数，否则循环进行选择
-        pass                        # 当调用的函数为create_room 或 join_room时，且其返回True(使用 is True 判断)则结束循环
-  
+    lobby_window = Tk()  # 当调用的函数为create_room 或 join_room时，且其返回True(使用 is True 判断)则结束循环
+    lobby_window.title("狼人杀")
+    lobby_window.geometry("800x500")
+    canvas_lobby = Canvas(lobby_window, height=500, width=800)
+    imagefile_lobby = ImageTk.PhotoImage(file="timg.jpg")  # 背景
+    # image = canvas_lobby.create_image(0, 0, anchor="nw", image=imagefile_lobby)
+    canvas_lobby.pack(side="top")
+    # 用户名的显示
+    Label(lobby_window, text="用户名：%s" % (log_in.usr_name), font=("黑体", 16)).place(x=20, y=30)
+    Button(lobby_window, text="创建房间", font=("黑体", 16), command=create_room).place(x=100, y=80)
+    Button(lobby_window, text="加入房间", font=("黑体", 16), command=join_room).place(x=200, y=80)
+
 def join_room():
     """
     加入房间界面
@@ -149,6 +142,16 @@ def join_room():
     成功则 return True
     否则   return False
     """
+    lobby_window = Tk()  # 当调用的函数为create_room 或 join_room时，且其返回True(使用 is True 判断)则结束循环
+    lobby_window.title("加入房间")
+    lobby_window.geometry("200x200")
+    # 用户名密码
+    Label(window, text='用户名:').place(x=100, y=150)
+    var_usr_name = StringVar()
+    entry_usr_name = Entry(window, textvariable=var_usr_name)
+    entry_usr_name.place(x=160, y=150)
+    bt_login = Button(window, text='确定', command=room_interface())
+    bt_login.place(x=140, y=230)
 
 def create_room():
     """
@@ -158,9 +161,25 @@ def create_room():
 	提交信息
     并等待接收相应结果
     """
-    pass
-    
-def game_interface():
+
+    join_window = Tk()
+    join_window.title("狼人杀")
+    join_window.geometry("450x450")
+    Label(window, text='房间名字:').place(x=100, y=150)
+    Label(window, text='密码:').place(x=100, y=190)
+    # 房间名输入框
+    var_usr_name = StringVar()
+    entry_usr_name = Entry(window, textvariable=var_usr_name)
+    entry_usr_name.place(x=160, y=150)
+    # 密码输入框
+    var_usr_pwd = StringVar()
+    entry_usr_pwd = Entry(window, textvariable=var_usr_pwd, show='*')
+    entry_usr_pwd.place(x=160, y=190)
+    bt_login = Button(window, text='确定', command=room_interface())
+    bt_login.place(x=140, y=230)
+
+
+def room_interface():
     """
     游戏内界面
 	初步分为三层：
@@ -169,7 +188,14 @@ def game_interface():
 		第三层：输入层，用于获取用户输入信息（文字和语音）等
 	整合三层拼接到一起
 	"""
-    pass
+    room_info=Tk()
+    room_info.title("房间名%s 房间Id%d"%(room_name,room_id))
+    room_info.geometry("400x600")
+    canvas_lobby = Canvas(room_info, height=500, width=800)
+    imagefile_lobby = ImageTk.PhotoImage(file="timg.jpg")  # 背景
+    image = canvas_lobby.create_image(0, 0, anchor="nw", image=imagefile_lobby)
+    canvas_lobby.pack(side="top")
+
 
 def people_screen(target, info, *args, **kwargs):
     """
