@@ -17,10 +17,10 @@ window = Tk()
 window.title('狼人杀')
 window.geometry('450x450')
 # 画布放置图片
-canvas = Canvas(window, height=450, width=450)
+canvas_first = Canvas(window, height=450, width=450)
 imagefile = ImageTk.PhotoImage(file='zh.jpg')#就是这里的格式
-image = canvas.create_image(0, 0, anchor='nw', image=imagefile)
-canvas.pack(side='top')
+image = canvas_first.create_image(0, 0, anchor='nw', image=imagefile)
+canvas_first.pack(side='top')
 # 用户名密码
 Label(window, text='用户名:').place(x=100, y=150)
 Label(window, text='密码:').place(x=100, y=190)
@@ -49,11 +49,15 @@ def log_in():
     usr_pwd = var_usr_pwd.get()
     if usr_name == '' or usr_pwd == '':
         tkinter.messagebox.showerror(message='用户名或密码为空')
-    # 不在数据库中弹出是否注册的框
+        return
     else:
-        is_signup = tkinter.messagebox.askyesno('欢迎', '用户名密码错误')
-        if is_signup:
-            sign_up()
+        # 不在数据库中弹出是否注册的框
+        # else:
+        #     is_signup = tkinter.messagebox.askyesno('欢迎', '用户名密码错误')
+        #     if is_signup:
+        #         sign_up()
+        window.destroy()
+        hall_interface()
 
 def sign_up():
     # 确认注册时的相应函数
@@ -123,12 +127,13 @@ def hall_interface():
     lobby_window.geometry("800x500")
     canvas_lobby = Canvas(lobby_window, height=500, width=800)
     imagefile_lobby = ImageTk.PhotoImage(file="timg.jpg")  # 背景
-    # image = canvas_lobby.create_image(0, 0, anchor="nw", image=imagefile_lobby)
+    interface_image = canvas_lobby.create_image(0, 0, anchor="nw", image=imagefile_lobby)
     canvas_lobby.pack(side="top")
     # 用户名的显示
-    Label(lobby_window, text="用户名：%s" % (log_in.usr_name), font=("黑体", 16)).place(x=20, y=30)
-    Button(lobby_window, text="创建房间", font=("黑体", 16), command=create_room).place(x=100, y=80)
+    # Label(lobby_window, text="用户名：%s" % (username), font=("黑体", 16)).place(x=20, y=30)
+    Button(lobby_window, text="创建房间", font=("黑体", 16),command=create_room).place(x=100, y=80)
     Button(lobby_window, text="加入房间", font=("黑体", 16), command=join_room).place(x=200, y=80)
+    mainloop()
 
 def join_room():
     """
@@ -162,22 +167,26 @@ def create_room():
     并等待接收相应结果
     """
 
-    join_window = Tk()
+    join_window = Toplevel()
     join_window.title("狼人杀")
     join_window.geometry("450x450")
-    Label(window, text='房间名字:').place(x=100, y=150)
-    Label(window, text='密码:').place(x=100, y=190)
+    # canvas = Canvas(window, height=450, width=450)
+    # imagefile = ImageTk.PhotoImage(file='1.jpg')  # 就是这里的格式
+    # join_image = canvas.create_image(0, 0, anchor='nw', image=imagefile)
+    # canvas.pack(side='top')
+    Label(join_window, text='房间名字:').place(x=100, y=150)
+    Label(join_window, text='密码:').place(x=100, y=190)
     # 房间名输入框
     var_usr_name = StringVar()
-    entry_usr_name = Entry(window, textvariable=var_usr_name)
+    entry_usr_name = Entry(join_window, textvariable=var_usr_name)
     entry_usr_name.place(x=160, y=150)
     # 密码输入框
     var_usr_pwd = StringVar()
-    entry_usr_pwd = Entry(window, textvariable=var_usr_pwd, show='*')
+    entry_usr_pwd = Entry(join_window, textvariable=var_usr_pwd, show='*')
     entry_usr_pwd.place(x=160, y=190)
-    bt_login = Button(window, text='确定', command=room_interface())
+    bt_login = Button(join_window, text='确定', command=room_interface())
     bt_login.place(x=140, y=230)
-
+    join_window.mainloop()
 
 def room_interface():
     """
@@ -188,12 +197,12 @@ def room_interface():
 		第三层：输入层，用于获取用户输入信息（文字和语音）等
 	整合三层拼接到一起
 	"""
-    room_info=Tk()
-    room_info.title("房间名%s 房间Id%d"%(room_name,room_id))
+    room_info=Toplevel()
+    # room_info.title("房间名%s 房间Id%d"%(room_name,room_id))
     room_info.geometry("400x600")
     canvas_lobby = Canvas(room_info, height=500, width=800)
     imagefile_lobby = ImageTk.PhotoImage(file="timg.jpg")  # 背景
-    image = canvas_lobby.create_image(0, 0, anchor="nw", image=imagefile_lobby)
+    interface_image = canvas_lobby.create_image(0, 0, anchor="nw", image=imagefile_lobby)
     canvas_lobby.pack(side="top")
 
 
@@ -245,6 +254,7 @@ def main():
     bt_logup.place(x=210, y=230)
     bt_logquit = Button(window, text='退出', command=usr_sign_quit)
     bt_logquit.place(x=280, y=230)
+
     # 主循环
     window.mainloop()
 
